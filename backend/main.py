@@ -14,7 +14,7 @@ from database import connect_to_mongo, close_mongo_connection, db
 from indexes import create_indexes
 from models import Trade, TradeCreate, TradeUpdate, TradeSide, TradeStatus, User, UserCreate, UserInDB
 from schemas import JournalResponse, DailyJournalStat, EquityCurveResponse, EquityPoint
-from auth import get_password_hash, verify_password, create_access_token, SECRET_KEY, ALGORITHM
+from auth import get_password_hash, verify_password, create_access_token, SECRET_KEY, ALGORITHM, validate_password_strength
 
 app = FastAPI(title="TradeTracking API", version="0.1.0")
 
@@ -134,6 +134,11 @@ async def register(user: UserCreate):
     existing_email = await db.db["users"].find_one({"email": user.email})
     if existing_email:
         raise HTTPException(status_code=400, detail="Email already registered")
+
+    # Validate password strength
+    is_valid, error_message = validate_password_strength(user.password)
+    if not is_valid:
+        raise HTTPException(status_code=400, detail=error_message)
 
     # Hash password
     hashed_password = get_password_hash(user.password)
