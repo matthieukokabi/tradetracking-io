@@ -1,0 +1,51 @@
+services:
+  # Backend: FastAPI
+  backend:
+    build: ./backend
+    container_name: tradetracking-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    environment:
+      - MONGODB_URL=mongodb://mongo:27017
+      - ALLOWED_ORIGINS=http://localhost:3000
+    depends_on:
+      - mongo
+    networks:
+      - app-network
+
+  # Frontend: Next.js
+  frontend:
+    build: ./frontend
+    container_name: tradetracking-frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+  # Database: MongoDB
+  mongo:
+    image: mongo:latest
+    container_name: tradetracking-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mongo_data:
