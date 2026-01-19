@@ -165,6 +165,60 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends()):
     access_token = create_access_token(data={"sub": user["username"], "id": str(user["_id"])})
     return {"access_token": access_token, "token_type": "bearer"}
 
+
+class GoogleAuthRequest(BaseModel):
+    email: str
+    name: str
+    google_id: str
+    image: Optional[str] = None
+
+
+@app.post("/api/v1/auth/google")
+async def google_auth(auth_request: GoogleAuthRequest):
+    """Handle Google OAuth - create or link user account"""
+    # Check if user exists by google_id or email
+    user = await db.db["users"].find_one({"google_id": auth_request.google_id})
+
+    if not user:
+        # Check if email already registered (link accounts)
+        user = await db.db["users"].find_one({"email": auth_request.email})
+
+        if user:
+            # Link Google account to existing user
+            await db.db["users"].update_one(
+                {"_id": user["_id"]},
+                {"$set": {
+                    "google_id": auth_request.google_id,
+                    "avatar_url": auth_request.image,
+                    "oauth_provider": "google"
+                }}
+            )
+        else:
+            # Create new user from Google data
+            import secrets
+            username = auth_request.email.split("@")[0] + "_" + secrets.token_hex(4)
+
+            user_dict = {
+                "username": username,
+                "email": auth_request.email,
+                "hashed_password": "",  # No password for OAuth users
+                "google_id": auth_request.google_id,
+                "oauth_provider": "google",
+                "avatar_url": auth_request.image,
+                "subscription_tier": "starter",
+                "created_at": datetime.utcnow()
+            }
+            result = await db.db["users"].insert_one(user_dict)
+            user = await db.db["users"].find_one({"_id": result.inserted_id})
+
+    # Generate access token
+    access_token = create_access_token(data={"sub": user["username"], "id": str(user["_id"])})
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "user_id": str(user["_id"])
+    }
+
 @app.get("/api/v1/dashboard/stats", response_model=DashboardStats)
 async def get_dashboard_stats(
     current_user: User = Depends(get_current_user),

@@ -43,3 +43,5 @@ backend/test_output*.txt
 coverage/
 htmlcov/
 .coverage
+.vercel
+.env*.local
