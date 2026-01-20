@@ -11,3 +11,7 @@ python-multipart==0.0.9
 python-jose[cryptography]==3.3.0
 bcrypt==4.1.2
 passlib[bcrypt]==1.7.4
+ccxt==4.2.0
+cryptography==42.0.2
+stripe==8.0.0
+pyotp==2.9.0

@@ -15,6 +15,16 @@ from indexes import create_indexes
 from models import Trade, TradeCreate, TradeUpdate, TradeSide, TradeStatus, User, UserCreate, UserInDB
 from schemas import JournalResponse, DailyJournalStat, EquityCurveResponse, EquityPoint
 from auth import get_password_hash, verify_password, create_access_token, SECRET_KEY, ALGORITHM, validate_password_strength
+from services.exchange_service import (
+    test_connection, fetch_balances, fetch_trades, fetch_positions,
+    sync_trades_to_db, get_supported_exchanges, encrypt_api_key, decrypt_api_key,
+    ExchangeCredentials
+)
+from services.payment_service import (
+    create_checkout_session, create_customer_portal_session,
+    get_subscription_status, cancel_subscription, handle_webhook_event,
+    get_pricing_info, CheckoutSessionRequest
+)
 
 app = FastAPI(title="TradeTracking API", version="0.1.0")
 
@@ -599,6 +609,361 @@ async def delete_trade(id: str, current_user: User = Depends(get_current_user)):
         return {"status": "success", "message": f"Trade {id} deleted"}
 
     raise HTTPException(status_code=404, detail=f"Trade {id} not found")
+
+
+# --- Exchange Connection Routes ---
+
+class ExchangeConnectionCreate(BaseModel):
+    exchange: str
+    api_key: str
+    api_secret: str
+    passphrase: Optional[str] = None
+    label: Optional[str] = None
+
+
+class ExchangeConnectionResponse(BaseModel):
+    id: str
+    exchange: str
+    label: Optional[str]
+    connected_at: datetime
+    last_sync: Optional[datetime]
+    status: str
+
+
+@app.get("/api/v1/exchanges/supported")
+async def list_supported_exchanges():
+    """List all supported exchanges."""
+    return {"exchanges": get_supported_exchanges()}
+
+
+@app.post("/api/v1/exchanges/test")
+async def test_exchange_connection(
+    credentials: ExchangeConnectionCreate,
+    current_user: User = Depends(get_current_user)
+):
+    """Test exchange API connection before saving."""
+    result = await test_connection(
+        credentials.exchange,
+        credentials.api_key,
+        credentials.api_secret,
+        credentials.passphrase
+    )
+    return result
+
+
+@app.post("/api/v1/exchanges/connect", response_model=ExchangeConnectionResponse)
+async def connect_exchange(
+    credentials: ExchangeConnectionCreate,
+    current_user: User = Depends(get_current_user)
+):
+    """Connect a new exchange and save encrypted credentials."""
+    # First test the connection
+    test_result = await test_connection(
+        credentials.exchange,
+        credentials.api_key,
+        credentials.api_secret,
+        credentials.passphrase
+    )
+
+    if not test_result.get("success"):
+        raise HTTPException(status_code=400, detail=test_result.get("error", "Connection failed"))
+
+    # Check exchange limit based on subscription
+    user_doc = await db.db["users"].find_one({"_id": current_user.id})
+    tier = user_doc.get("subscription_tier", "starter")
+
+    exchange_limits = {"starter": 1, "pro": 5, "elite": 999}
+    max_exchanges = exchange_limits.get(tier, 1)
+
+    existing_count = await db.db["exchange_connections"].count_documents({"user_id": str(current_user.id)})
+    if existing_count >= max_exchanges:
+        raise HTTPException(
+            status_code=403,
+            detail=f"Exchange limit reached ({max_exchanges}). Upgrade your plan for more connections."
+        )
+
+    # Encrypt API keys before storing
+    encrypted_key = encrypt_api_key(credentials.api_key)
+    encrypted_secret = encrypt_api_key(credentials.api_secret)
+    encrypted_passphrase = encrypt_api_key(credentials.passphrase) if credentials.passphrase else None
+
+    connection_doc = {
+        "user_id": str(current_user.id),
+        "exchange": credentials.exchange,
+        "api_key_encrypted": encrypted_key,
+        "api_secret_encrypted": encrypted_secret,
+        "passphrase_encrypted": encrypted_passphrase,
+        "label": credentials.label or credentials.exchange.capitalize(),
+        "connected_at": datetime.utcnow(),
+        "last_sync": None,
+        "status": "active"
+    }
+
+    result = await db.db["exchange_connections"].insert_one(connection_doc)
+    connection_doc["id"] = str(result.inserted_id)
+
+    return ExchangeConnectionResponse(
+        id=connection_doc["id"],
+        exchange=connection_doc["exchange"],
+        label=connection_doc["label"],
+        connected_at=connection_doc["connected_at"],
+        last_sync=connection_doc["last_sync"],
+        status=connection_doc["status"]
+    )
+
+
+@app.get("/api/v1/exchanges", response_model=List[ExchangeConnectionResponse])
+async def list_exchange_connections(current_user: User = Depends(get_current_user)):
+    """List all connected exchanges for user."""
+    connections = await db.db["exchange_connections"].find(
+        {"user_id": str(current_user.id)}
+    ).to_list(100)
+
+    return [
+        ExchangeConnectionResponse(
+            id=str(conn["_id"]),
+            exchange=conn["exchange"],
+            label=conn.get("label"),
+            connected_at=conn["connected_at"],
+            last_sync=conn.get("last_sync"),
+            status=conn.get("status", "active")
+        )
+        for conn in connections
+    ]
+
+
+@app.post("/api/v1/exchanges/{connection_id}/sync")
+async def sync_exchange_trades(
+    connection_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Sync trades from an exchange."""
+    from bson import ObjectId
+
+    connection = await db.db["exchange_connections"].find_one({
+        "_id": ObjectId(connection_id),
+        "user_id": str(current_user.id)
+    })
+
+    if not connection:
+        raise HTTPException(status_code=404, detail="Exchange connection not found")
+
+    # Decrypt credentials
+    api_key = decrypt_api_key(connection["api_key_encrypted"])
+    api_secret = decrypt_api_key(connection["api_secret_encrypted"])
+    passphrase = decrypt_api_key(connection["passphrase_encrypted"]) if connection.get("passphrase_encrypted") else None
+
+    # Sync trades
+    result = await sync_trades_to_db(
+        connection["exchange"],
+        api_key,
+        api_secret,
+        passphrase,
+        str(current_user.id),
+        db.db
+    )
+
+    if result.get("success"):
+        # Update last sync time
+        await db.db["exchange_connections"].update_one(
+            {"_id": ObjectId(connection_id)},
+            {"$set": {"last_sync": datetime.utcnow()}}
+        )
+
+    return result
+
+
+@app.delete("/api/v1/exchanges/{connection_id}")
+async def delete_exchange_connection(
+    connection_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Delete an exchange connection."""
+    from bson import ObjectId
+
+    result = await db.db["exchange_connections"].delete_one({
+        "_id": ObjectId(connection_id),
+        "user_id": str(current_user.id)
+    })
+
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Exchange connection not found")
+
+    return {"status": "success", "message": "Exchange disconnected"}
+
+
+@app.get("/api/v1/exchanges/{connection_id}/balances")
+async def get_exchange_balances(
+    connection_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Get real-time balances from exchange."""
+    from bson import ObjectId
+
+    connection = await db.db["exchange_connections"].find_one({
+        "_id": ObjectId(connection_id),
+        "user_id": str(current_user.id)
+    })
+
+    if not connection:
+        raise HTTPException(status_code=404, detail="Exchange connection not found")
+
+    api_key = decrypt_api_key(connection["api_key_encrypted"])
+    api_secret = decrypt_api_key(connection["api_secret_encrypted"])
+    passphrase = decrypt_api_key(connection["passphrase_encrypted"]) if connection.get("passphrase_encrypted") else None
+
+    balances = await fetch_balances(connection["exchange"], api_key, api_secret, passphrase)
+    return {"balances": [b.model_dump() for b in balances]}
+
+
+@app.get("/api/v1/exchanges/{connection_id}/positions")
+async def get_exchange_positions(
+    connection_id: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Get open positions from exchange."""
+    from bson import ObjectId
+
+    connection = await db.db["exchange_connections"].find_one({
+        "_id": ObjectId(connection_id),
+        "user_id": str(current_user.id)
+    })
+
+    if not connection:
+        raise HTTPException(status_code=404, detail="Exchange connection not found")
+
+    api_key = decrypt_api_key(connection["api_key_encrypted"])
+    api_secret = decrypt_api_key(connection["api_secret_encrypted"])
+    passphrase = decrypt_api_key(connection["passphrase_encrypted"]) if connection.get("passphrase_encrypted") else None
+
+    positions = await fetch_positions(connection["exchange"], api_key, api_secret, passphrase)
+    return {"positions": [p.model_dump() for p in positions]}
+
+
+# --- Payment/Subscription Routes ---
+
+@app.get("/api/v1/pricing")
+async def get_pricing():
+    """Get pricing information."""
+    return get_pricing_info()
+
+
+@app.post("/api/v1/subscription/checkout")
+async def create_subscription_checkout(
+    request: CheckoutSessionRequest,
+    current_user: User = Depends(get_current_user)
+):
+    """Create a Stripe checkout session for subscription."""
+    user_doc = await db.db["users"].find_one({"_id": current_user.id})
+
+    result = await create_checkout_session(
+        user_id=str(current_user.id),
+        email=user_doc.get("email", ""),
+        tier=request.tier,
+        billing_cycle=request.billing_cycle,
+        success_url=request.success_url,
+        cancel_url=request.cancel_url
+    )
+
+    if not result.get("success"):
+        raise HTTPException(status_code=400, detail=result.get("error"))
+
+    return result
+
+
+@app.post("/api/v1/subscription/portal")
+async def create_billing_portal(
+    return_url: str = Body(..., embed=True),
+    current_user: User = Depends(get_current_user)
+):
+    """Create Stripe Customer Portal session."""
+    user_doc = await db.db["users"].find_one({"_id": current_user.id})
+    stripe_customer_id = user_doc.get("stripe_customer_id")
+
+    if not stripe_customer_id:
+        raise HTTPException(status_code=400, detail="No active subscription found")
+
+    result = await create_customer_portal_session(stripe_customer_id, return_url)
+
+    if not result.get("success"):
+        raise HTTPException(status_code=400, detail=result.get("error"))
+
+    return result
+
+
+@app.get("/api/v1/subscription/status")
+async def get_user_subscription(current_user: User = Depends(get_current_user)):
+    """Get current user's subscription status."""
+    user_doc = await db.db["users"].find_one({"_id": current_user.id})
+
+    subscription_id = user_doc.get("stripe_subscription_id")
+    if subscription_id:
+        status = await get_subscription_status(subscription_id)
+        return status.model_dump()
+
+    return {
+        "tier": user_doc.get("subscription_tier", "starter"),
+        "status": "active",
+        "cancel_at_period_end": False
+    }
+
+
+@app.post("/api/v1/subscription/cancel")
+async def cancel_user_subscription(
+    immediate: bool = Body(False, embed=True),
+    current_user: User = Depends(get_current_user)
+):
+    """Cancel subscription."""
+    user_doc = await db.db["users"].find_one({"_id": current_user.id})
+    subscription_id = user_doc.get("stripe_subscription_id")
+
+    if not subscription_id:
+        raise HTTPException(status_code=400, detail="No active subscription to cancel")
+
+    result = await cancel_subscription(subscription_id, immediate)
+
+    if result.get("success") and immediate:
+        await db.db["users"].update_one(
+            {"_id": current_user.id},
+            {"$set": {"subscription_tier": "starter", "stripe_subscription_id": None}}
+        )
+
+    return result
+
+
+@app.post("/api/v1/webhooks/stripe")
+async def stripe_webhook(request):
+    """Handle Stripe webhook events."""
+    from starlette.requests import Request
+    payload = await request.body()
+    sig_header = request.headers.get("stripe-signature", "")
+
+    result = await handle_webhook_event(payload, sig_header)
+
+    if not result.get("success"):
+        raise HTTPException(status_code=400, detail=result.get("error"))
+
+    # Process the webhook action
+    action = result.get("action")
+    user_id = result.get("user_id")
+
+    if action == "subscription_created" and user_id:
+        await db.db["users"].update_one(
+            {"_id": user_id},
+            {"$set": {
+                "subscription_tier": result.get("tier"),
+                "stripe_customer_id": result.get("stripe_customer_id"),
+                "stripe_subscription_id": result.get("stripe_subscription_id")
+            }}
+        )
+    elif action == "subscription_cancelled" and user_id:
+        await db.db["users"].update_one(
+            {"_id": user_id},
+            {"$set": {"subscription_tier": "starter"}}
+        )
+
+    return {"received": True}
+
 
 if __name__ == "__main__":
     import uvicorn

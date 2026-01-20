@@ -18,6 +18,7 @@ export const metadata: Metadata = {
 };
 
 import Navbar from "../components/Navbar";
+import Chatbot from "../components/Chatbot";
 import Providers from "./providers";
 
 export default function RootLayout({
@@ -35,6 +36,7 @@ export default function RootLayout({
           <main className="p-4 md:p-8 max-w-7xl mx-auto">
             {children}
           </main>
+          <Chatbot />
         </Providers>
       </body>
     </html>
