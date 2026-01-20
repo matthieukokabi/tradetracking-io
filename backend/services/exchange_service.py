@@ -1,6 +1,8 @@
 """
 Exchange Service - CCXT Integration for TradeTracking.io
-Supports: Binance, Bybit, OKX, Coinbase, Kraken, KuCoin, Bitget, Hyperliquid, dYdX
+Supports: Binance, Bybit, OKX, Coinbase, Kraken, KuCoin, Bitget, Gate, MEXC
+          Hyperliquid, dYdX, Phemex, BitMEX (Crypto)
+          Alpaca (Stocks)
 """
 
 import ccxt
@@ -55,15 +57,25 @@ class ExchangePosition(BaseModel):
 
 # Supported exchanges configuration
 SUPPORTED_EXCHANGES = {
-    "binance": {"class": ccxt.binance, "has_futures": True},
-    "bybit": {"class": ccxt.bybit, "has_futures": True},
-    "okx": {"class": ccxt.okx, "has_futures": True, "requires_passphrase": True},
-    "coinbase": {"class": ccxt.coinbase, "has_futures": False},
-    "kraken": {"class": ccxt.kraken, "has_futures": True},
-    "kucoin": {"class": ccxt.kucoin, "has_futures": True, "requires_passphrase": True},
-    "bitget": {"class": ccxt.bitget, "has_futures": True, "requires_passphrase": True},
-    "gate": {"class": ccxt.gate, "has_futures": True},
-    "mexc": {"class": ccxt.mexc, "has_futures": True},
+    # === CRYPTO SPOT & FUTURES ===
+    "binance": {"class": ccxt.binance, "has_futures": True, "category": "crypto"},
+    "bybit": {"class": ccxt.bybit, "has_futures": True, "category": "crypto"},
+    "okx": {"class": ccxt.okx, "has_futures": True, "requires_passphrase": True, "category": "crypto"},
+    "coinbase": {"class": ccxt.coinbase, "has_futures": False, "category": "crypto"},
+    "kraken": {"class": ccxt.kraken, "has_futures": True, "category": "crypto"},
+    "kucoin": {"class": ccxt.kucoin, "has_futures": True, "requires_passphrase": True, "category": "crypto"},
+    "bitget": {"class": ccxt.bitget, "has_futures": True, "requires_passphrase": True, "category": "crypto"},
+    "gate": {"class": ccxt.gate, "has_futures": True, "category": "crypto"},
+    "mexc": {"class": ccxt.mexc, "has_futures": True, "category": "crypto"},
+
+    # === CRYPTO DERIVATIVES ===
+    "hyperliquid": {"class": ccxt.hyperliquid, "has_futures": True, "category": "crypto-derivatives"},
+    "dydx": {"class": ccxt.dydx, "has_futures": True, "category": "crypto-derivatives"},
+    "phemex": {"class": ccxt.phemex, "has_futures": True, "category": "crypto-derivatives"},
+    "bitmex": {"class": ccxt.bitmex, "has_futures": True, "category": "crypto-derivatives"},
+
+    # === STOCK MARKET ===
+    "alpaca": {"class": ccxt.alpaca, "has_futures": False, "category": "stocks", "asset_types": ["stocks", "options"]},
 }
 
 
@@ -338,7 +350,9 @@ def get_supported_exchanges() -> List[Dict[str, Any]]:
             "id": eid,
             "name": eid.capitalize(),
             "has_futures": config.get("has_futures", False),
-            "requires_passphrase": config.get("requires_passphrase", False)
+            "requires_passphrase": config.get("requires_passphrase", False),
+            "category": config.get("category", "crypto"),
+            "asset_types": config.get("asset_types", ["crypto"]),
         }
         for eid, config in SUPPORTED_EXCHANGES.items()
     ]
