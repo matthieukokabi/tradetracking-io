@@ -13,7 +13,7 @@ class ApiClient {
 
   private async fetch<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const session = await getSession();
-    const token = (session as any)?.accessToken;
+    const token = (session as { accessToken?: string })?.accessToken;
 
     const url = `${this.baseUrl}${endpoint}`;
     const headers = {
@@ -59,7 +59,7 @@ class ApiClient {
     return response.json();
   }
 
-  async register(username: string, email: string, password: string): Promise<any> {
+  async register(username: string, email: string, password: string): Promise<{ id: string; username: string; email: string }> {
     const url = `${this.baseUrl}/api/v1/auth/register`;
     const response = await fetch(url, {
       method: "POST",
@@ -96,7 +96,7 @@ class ApiClient {
 
   async importTrades(file: File): Promise<{ status: string; imported: number; message: string }> {
     const session = await getSession();
-    const token = (session as any)?.accessToken;
+    const token = (session as { accessToken?: string })?.accessToken;
 
     const formData = new FormData();
     formData.append("file", file);

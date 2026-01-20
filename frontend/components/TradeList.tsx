@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { api } from "../lib/api";
-import { Trade, TradeSide, TradeStatus } from "../types";
+import { Trade, TradeSide } from "../types";
 import { TradeFilters } from "../types/filters";
 
 interface TradeListProps {

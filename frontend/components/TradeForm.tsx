@@ -73,7 +73,7 @@ export default function TradeForm({ initialData, onSuccess, onCancel }: TradeFor
         toast.success("Trade updated successfully");
       } else {
         await api.createTrade({
-          ...(formData as any),
+          ...(formData as Omit<Trade, "_id">),
           status: TradeStatus.OPEN,
         });
         toast.success("Trade created successfully");

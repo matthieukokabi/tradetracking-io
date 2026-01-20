@@ -1,4 +1,4 @@
-const nextJest = require('next/jest');
+import nextJest from 'next/jest.js';
 
 const createJestConfig = nextJest({
   dir: './',
@@ -13,4 +13,4 @@ const customJestConfig = {
   testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/node_modules/'],
 };
 
-module.exports = createJestConfig(customJestConfig);
+export default createJestConfig(customJestConfig);

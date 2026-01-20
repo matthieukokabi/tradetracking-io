@@ -9,7 +9,7 @@ interface FilterBarProps {
 }
 
 export default function FilterBar({ filters, onChange }: FilterBarProps) {
-  const handleChange = (key: keyof TradeFilters, value: any) => {
+  const handleChange = (key: keyof TradeFilters, value: string | undefined) => {
     onChange({ ...filters, [key]: value || undefined });
   };
 

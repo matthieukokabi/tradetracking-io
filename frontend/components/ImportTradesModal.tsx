@@ -36,10 +36,11 @@ export default function ImportTradesModal({ onSuccess, onCancel }: ImportTradesM
       const result = await api.importTrades(file);
       toast.success(result.message);
       onSuccess();
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      toast.error(err.message || "Failed to import trades");
-      setError(err.message || "Failed to import trades");
+      const errorMessage = err instanceof Error ? err.message : "Failed to import trades";
+      toast.error(errorMessage);
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

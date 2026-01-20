@@ -52,7 +52,7 @@ export default function ExchangeConnection({ apiUrl, token, onConnectionChange }
     const [isLoading, setIsLoading] = useState(false);
     const [isTesting, setIsTesting] = useState(false);
     const [error, setError] = useState('');
-    const [testResult, setTestResult] = useState<any>(null);
+    const [testResult, setTestResult] = useState<{ success: boolean; total_balance_usd?: number; error?: string } | null>(null);
     const [syncingId, setSyncingId] = useState<string | null>(null);
 
     const colors = isDark ? {
@@ -125,8 +125,8 @@ export default function ExchangeConnection({ apiUrl, token, onConnectionChange }
             if (!data.success) {
                 setError(data.error || 'Connection test failed');
             }
-        } catch (err: any) {
-            setError(err.message || 'Failed to test connection');
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : 'Failed to test connection');
         } finally {
             setIsTesting(false);
         }
@@ -164,8 +164,8 @@ export default function ExchangeConnection({ apiUrl, token, onConnectionChange }
             setFormData({ api_key: '', api_secret: '', passphrase: '', label: '' });
             setTestResult(null);
             onConnectionChange?.();
-        } catch (err: any) {
-            setError(err.message || 'Failed to connect exchange');
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : 'Failed to connect exchange');
         } finally {
             setIsLoading(false);
         }
