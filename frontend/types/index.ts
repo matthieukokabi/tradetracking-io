@@ -41,6 +41,35 @@ export interface DashboardStats {
   winning_trades: number;
   losing_trades: number;
   breakeven_trades: number;
+  avg_win?: number;
+  avg_loss?: number;
+  max_drawdown?: number;
+  best_trade?: number;
+  worst_trade?: number;
+  avg_trade?: number;
+}
+
+export interface PortfolioStats {
+  total_equity: number;
+  unrealized_pnl: number;
+  open_positions_count: number;
+  positions?: Position[];
+}
+
+export interface Position {
+  symbol: string;
+  side: string;
+  size: number;
+  entry_price: number;
+  current_price: number;
+  pnl: number;
+  exchange?: string;
+}
+
+export interface ChartDataPoint {
+  date: string;
+  value: number;
+  daily_pnl: number;
 }
 
 export interface DailyJournalStat {
