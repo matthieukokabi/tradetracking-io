@@ -1,8 +1,9 @@
 """
 Exchange Service - CCXT Integration for TradeTracking.io
-Supports: Binance, Bybit, OKX, Coinbase, Kraken, KuCoin, Bitget, Gate, MEXC
-          Hyperliquid, dYdX, Phemex, BitMEX (Crypto)
-          Alpaca (Stocks)
+Supports 17+ exchanges:
+  - Crypto CEX: Binance, Bybit, OKX, Coinbase, Kraken, KuCoin, Bitget, Gate, MEXC, Crypto.com, HTX (Huobi), WOO X
+  - Crypto DEX/Derivatives: Hyperliquid, dYdX, Phemex, BitMEX, Apex
+  - Stocks: Alpaca
 """
 
 import ccxt
@@ -57,7 +58,7 @@ class ExchangePosition(BaseModel):
 
 # Supported exchanges configuration
 SUPPORTED_EXCHANGES = {
-    # === CRYPTO SPOT & FUTURES ===
+    # === CRYPTO SPOT & FUTURES (CEX) ===
     "binance": {"class": ccxt.binance, "has_futures": True, "category": "crypto"},
     "bybit": {"class": ccxt.bybit, "has_futures": True, "category": "crypto"},
     "okx": {"class": ccxt.okx, "has_futures": True, "requires_passphrase": True, "category": "crypto"},
@@ -67,12 +68,16 @@ SUPPORTED_EXCHANGES = {
     "bitget": {"class": ccxt.bitget, "has_futures": True, "requires_passphrase": True, "category": "crypto"},
     "gate": {"class": ccxt.gate, "has_futures": True, "category": "crypto"},
     "mexc": {"class": ccxt.mexc, "has_futures": True, "category": "crypto"},
+    "cryptocom": {"class": ccxt.cryptocom, "has_futures": True, "category": "crypto"},
+    "htx": {"class": ccxt.htx, "has_futures": True, "category": "crypto"},  # Formerly Huobi
+    "woo": {"class": ccxt.woo, "has_futures": True, "category": "crypto"},  # WOO X
 
-    # === CRYPTO DERIVATIVES ===
+    # === CRYPTO DERIVATIVES (DEX) ===
     "hyperliquid": {"class": ccxt.hyperliquid, "has_futures": True, "category": "crypto-derivatives"},
     "dydx": {"class": ccxt.dydx, "has_futures": True, "category": "crypto-derivatives"},
     "phemex": {"class": ccxt.phemex, "has_futures": True, "category": "crypto-derivatives"},
     "bitmex": {"class": ccxt.bitmex, "has_futures": True, "category": "crypto-derivatives"},
+    "apex": {"class": ccxt.apex, "has_futures": True, "category": "crypto-derivatives"},
 
     # === STOCK MARKET ===
     "alpaca": {"class": ccxt.alpaca, "has_futures": False, "category": "stocks", "asset_types": ["stocks", "options"]},
