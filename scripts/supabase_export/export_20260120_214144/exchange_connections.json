@@ -1,0 +1,32 @@
+[
+  {
+    "id": 10,
+    "user_id": "cca97d7b-fefd-41bf-ac87-cc6d2224f29a",
+    "exchange_id": "hyperliquid",
+    "api_key": "0x7c84d1b9333557057315E0d2CA90D676B8Bd0895",
+    "api_secret": "",
+    "nickname": "hyperliquid",
+    "created_at": "2025-12-27T19:12:14.954497+00:00",
+    "updated_at": "2025-12-27T19:12:14.954497+00:00"
+  },
+  {
+    "id": 12,
+    "user_id": "cca97d7b-fefd-41bf-ac87-cc6d2224f29a",
+    "exchange_id": "hyperliquid",
+    "api_key": "0x0089F54EC18B62266300b2C30e91c16e6c6CF910",
+    "api_secret": "",
+    "nickname": "hyperliquid",
+    "created_at": "2025-12-27T20:31:40.248982+00:00",
+    "updated_at": "2025-12-27T20:31:40.248982+00:00"
+  },
+  {
+    "id": 13,
+    "user_id": "cca97d7b-fefd-41bf-ac87-cc6d2224f29a",
+    "exchange_id": "binance",
+    "api_key": "kJqfZcQFsZanJG81uHbkOIZKkZLGu47rHsNhdcxiTOzOHbQDN2qw4KiSgSrv80p4",
+    "api_secret": "M4VBuUcTh3x44rq2oyOmdFN8jbP0sBQcIY94kriKpbxEQbCpE5pOtRoSW6ZbCcyk",
+    "nickname": "binance",
+    "created_at": "2025-12-28T17:57:41.627334+00:00",
+    "updated_at": "2025-12-28T17:57:41.627334+00:00"
+  }
+]

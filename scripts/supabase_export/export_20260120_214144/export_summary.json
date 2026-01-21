@@ -1,0 +1,10 @@
+{
+  "exported_at": "2026-01-20T21:41:46.990605",
+  "supabase_url": "https://ovjzjjmphllhbhiosdjz.supabase.co",
+  "auth_users_count": 12,
+  "tables": {
+    "profiles": 2,
+    "trades": 513,
+    "exchange_connections": 3
+  }
+}

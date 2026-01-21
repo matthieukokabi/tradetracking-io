@@ -1,0 +1,263 @@
+[
+  {
+    "id": "760a654b-6328-4b11-8b35-85cf42486c21",
+    "email": "test_final_jan10@gmail.com",
+    "phone": "",
+    "created_at": "2026-01-10T19:30:27.335294+00:00",
+    "updated_at": "2026-01-10T19:30:28.096796+00:00",
+    "last_sign_in_at": null,
+    "email_confirmed_at": null,
+    "user_metadata": {
+      "email": "test_final_jan10@gmail.com",
+      "email_verified": false,
+      "phone_verified": false,
+      "sub": "760a654b-6328-4b11-8b35-85cf42486c21"
+    },
+    "app_metadata": {
+      "provider": "email",
+      "providers": [
+        "email"
+      ]
+    }
+  },
+  {
+    "id": "2fd07ae8-cc1a-4836-9a95-d28dc3f523ba",
+    "email": "testuser_jan10_r2@gmail.com",
+    "phone": "",
+    "created_at": "2026-01-10T19:24:24.546578+00:00",
+    "updated_at": "2026-01-10T19:24:25.199781+00:00",
+    "last_sign_in_at": null,
+    "email_confirmed_at": null,
+    "user_metadata": {
+      "email": "testuser_jan10_r2@gmail.com",
+      "email_verified": false,
+      "phone_verified": false,
+      "sub": "2fd07ae8-cc1a-4836-9a95-d28dc3f523ba"
+    },
+    "app_metadata": {
+      "provider": "email",
+      "providers": [
+        "email"
+      ]
+    }
+  },
+  {
+    "id": "79229fbb-1fc8-414e-aad1-04b558c5517e",
+    "email": "testuser_jan10_1@gmail.com",
+    "phone": "",
+    "created_at": "2026-01-10T19:17:55.968270+00:00",
+    "updated_at": "2026-01-10T19:17:56.604572+00:00",
+    "last_sign_in_at": null,
+    "email_confirmed_at": null,
+    "user_metadata": {
+      "email": "testuser_jan10_1@gmail.com",
+      "email_verified": false,
+      "phone_verified": false,
+      "sub": "79229fbb-1fc8-414e-aad1-04b558c5517e"
+    },
+    "app_metadata": {
+      "provider": "email",
+      "providers": [
+        "email"
+      ]
+    }
+  },
+  {
+    "id": "6ff1c65d-d29e-42f8-8267-df2b4ec6d4e2",
+    "email": "vps_test_2@tradetracking.io",
+    "phone": "",
+    "created_at": "2026-01-10T19:12:45.672116+00:00",
+    "updated_at": "2026-01-10T19:12:46.339799+00:00",
+    "last_sign_in_at": null,
+    "email_confirmed_at": null,
+    "user_metadata": {
+      "email": "vps_test_2@tradetracking.io",
+      "email_verified": false,
+      "phone_verified": false,
+      "sub": "6ff1c65d-d29e-42f8-8267-df2b4ec6d4e2"
+    },
+    "app_metadata": {
+      "provider": "email",
+      "providers": [
+        "email"
+      ]
+    }
+  },
+  {
+    "id": "7c897971-f53c-4bea-af0c-0c7e0474a599",
+    "email": "matthieu.kokabi@gmail.com",
+    "phone": "",
+    "created_at": "2026-01-10T19:11:01.862060+00:00",
+    "updated_at": "2026-01-16T23:55:03.332827+00:00",
+    "last_sign_in_at": "2026-01-16T15:20:30.468065+00:00",
+    "email_confirmed_at": "2026-01-10T19:11:27.641241+00:00",
+    "user_metadata": {
+      "email": "matthieu.kokabi@gmail.com",
+      "email_verified": true,
+      "full_name": "Matthieu K.",
+      "iss": "https://accounts.google.com",
+      "name": "Matthieu K.",
+      "phone_verified": false,
+      "provider_id": "105160645088291943024",
+      "sub": "105160645088291943024"
+    },
+    "app_metadata": {
+      "provider": "email",
+      "providers": [
+        "email",
+        "google"
+      ]
+    }
+  },
+  {
+    "id": "9084e5ea-28ea-4e4f-95fd-c25b7d06dc94",
+    "email": "vps_test_1@tradetracking.io",
+    "phone": "",
+    "created_at": "2026-01-10T19:06:28.455890+00:00",
+    "updated_at": "2026-01-10T19:06:29.161699+00:00",
+    "last_sign_in_at": null,
+    "email_confirmed_at": null,
+    "user_metadata": {
+      "email": "vps_test_1@tradetracking.io",
+      "email_verified": false,
+      "phone_verified": false,
+      "sub": "9084e5ea-28ea-4e4f-95fd-c25b7d06dc94"
+    },
+    "app_metadata": {
+      "provider": "email",
+      "providers": [
+        "email"
+      ]
+    }
+  },
+  {
+    "id": "31685dce-3e0e-4819-8d23-c33848f98e74",
+    "email": "mkok@hotmail.fr",
+    "phone": "",
+    "created_at": "2026-01-10T19:04:56.171603+00:00",
+    "updated_at": "2026-01-10T19:10:21.696248+00:00",
+    "last_sign_in_at": null,
+    "email_confirmed_at": null,
+    "user_metadata": {
+      "email": "mkok@hotmail.fr",
+      "email_verified": false,
+      "phone_verified": false,
+      "sub": "31685dce-3e0e-4819-8d23-c33848f98e74"
+    },
+    "app_metadata": {
+      "provider": "email",
+      "providers": [
+        "email"
+      ]
+    }
+  },
+  {
+    "id": "b8f05f0d-dfae-411c-8e6d-1098bc04c6f5",
+    "email": "test6092@gmail.com",
+    "phone": "",
+    "created_at": "2026-01-04T18:27:30.838264+00:00",
+    "updated_at": "2026-01-04T18:27:31.667695+00:00",
+    "last_sign_in_at": null,
+    "email_confirmed_at": null,
+    "user_metadata": {
+      "email": "test6092@gmail.com",
+      "email_verified": false,
+      "phone_verified": false,
+      "sub": "b8f05f0d-dfae-411c-8e6d-1098bc04c6f5"
+    },
+    "app_metadata": {
+      "provider": "email",
+      "providers": [
+        "email"
+      ]
+    }
+  },
+  {
+    "id": "cca97d7b-fefd-41bf-ac87-cc6d2224f29a",
+    "email": "magikmad@outlook.com",
+    "phone": "",
+    "created_at": "2025-12-27T14:13:22.994079+00:00",
+    "updated_at": "2026-01-19T07:24:25.440841+00:00",
+    "last_sign_in_at": "2026-01-17T17:44:35.403209+00:00",
+    "email_confirmed_at": "2025-12-27T14:13:44.332469+00:00",
+    "user_metadata": {
+      "email": "magikmad@outlook.com",
+      "email_verified": true,
+      "full_name": "Demo Trader",
+      "phone_verified": false,
+      "sub": "cca97d7b-fefd-41bf-ac87-cc6d2224f29a"
+    },
+    "app_metadata": {
+      "provider": "email",
+      "providers": [
+        "email"
+      ]
+    }
+  },
+  {
+    "id": "f5e7735d-0ead-4dd7-97c2-adb3e8b4a79d",
+    "email": "demo.trader@gmail.com",
+    "phone": "",
+    "created_at": "2025-12-27T14:08:44.447510+00:00",
+    "updated_at": "2025-12-27T14:08:45.073387+00:00",
+    "last_sign_in_at": null,
+    "email_confirmed_at": null,
+    "user_metadata": {
+      "email": "demo.trader@gmail.com",
+      "email_verified": false,
+      "full_name": "Demo Trader",
+      "phone_verified": false,
+      "sub": "f5e7735d-0ead-4dd7-97c2-adb3e8b4a79d"
+    },
+    "app_metadata": {
+      "provider": "email",
+      "providers": [
+        "email"
+      ]
+    }
+  },
+  {
+    "id": "c294300f-1f45-47ba-a6bb-21da901f2657",
+    "email": "demo@antigravity.io",
+    "phone": "",
+    "created_at": "2025-12-27T14:03:55.271627+00:00",
+    "updated_at": "2025-12-27T14:03:56.188896+00:00",
+    "last_sign_in_at": null,
+    "email_confirmed_at": null,
+    "user_metadata": {
+      "email": "demo@antigravity.io",
+      "email_verified": false,
+      "full_name": "Demo Trader",
+      "phone_verified": false,
+      "sub": "c294300f-1f45-47ba-a6bb-21da901f2657"
+    },
+    "app_metadata": {
+      "provider": "email",
+      "providers": [
+        "email"
+      ]
+    }
+  },
+  {
+    "id": "81fa4f62-c393-4cf5-b607-655a254857ef",
+    "email": "verify_flow_1766787663392@gmail.com",
+    "phone": "",
+    "created_at": "2025-12-26T22:21:49.531534+00:00",
+    "updated_at": "2025-12-26T22:21:50.244259+00:00",
+    "last_sign_in_at": null,
+    "email_confirmed_at": null,
+    "user_metadata": {
+      "email": "verify_flow_1766787663392@gmail.com",
+      "email_verified": false,
+      "full_name": "Agent Tester",
+      "phone_verified": false,
+      "sub": "81fa4f62-c393-4cf5-b607-655a254857ef"
+    },
+    "app_metadata": {
+      "provider": "email",
+      "providers": [
+        "email"
+      ]
+    }
+  }
+]

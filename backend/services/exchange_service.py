@@ -1,9 +1,12 @@
 """
 Exchange Service - CCXT Integration for TradeTracking.io
-Supports 17+ exchanges:
-  - Crypto CEX: Binance, Bybit, OKX, Coinbase, Kraken, KuCoin, Bitget, Gate, MEXC, Crypto.com, HTX (Huobi), WOO X
-  - Crypto DEX/Derivatives: Hyperliquid, dYdX, Phemex, BitMEX, Apex
-  - Stocks: Alpaca
+Supports 23+ exchanges and brokers:
+  - Crypto CEX (12): Binance, Bybit, OKX, Coinbase, Kraken, KuCoin, Bitget, Gate, MEXC, Crypto.com, HTX, WOO X
+  - Crypto DEX (5): Hyperliquid, dYdX, Phemex, BitMEX, Apex
+  - Stocks via CCXT (1): Alpaca
+  - Stocks via Direct API (6): Tradier, E*TRADE, Schwab, Interactive Brokers, Webull, Firstrade
+
+For stock brokers with direct API integration, see stock_broker_service.py
 """
 
 import ccxt

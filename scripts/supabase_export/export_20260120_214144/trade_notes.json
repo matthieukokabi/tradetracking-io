@@ -1,0 +1,15 @@
+[
+  {
+    "id": 42,
+    "user_id": "cca97d7b-fefd-41bf-ac87-cc6d2224f29a",
+    "trade_id": "1483",
+    "note": "no good",
+    "tags": [
+      "FOMO"
+    ],
+    "rating": 1,
+    "image_url": null,
+    "created_at": "2025-12-28T18:49:52.97642+00:00",
+    "updated_at": "2025-12-28T18:49:52.97642+00:00"
+  }
+]

@@ -1,0 +1,47 @@
+[
+  {
+    "id": "7c897971-f53c-4bea-af0c-0c7e0474a599",
+    "username": "matthieu.kokabi",
+    "referral_code": "4RA4B8",
+    "referred_by": null,
+    "points": 0,
+    "avatar_url": null,
+    "created_at": "2026-01-10T19:11:02.73886+00:00",
+    "bio": null,
+    "is_public": false,
+    "totp_secret": null,
+    "totp_enabled": false,
+    "backup_codes": null,
+    "subscription_tier": "starter",
+    "stripe_customer_id": "cus_Tn6x0GT5flK5BQ",
+    "stripe_subscription_id": null,
+    "subscription_status": "active"
+  },
+  {
+    "id": "cca97d7b-fefd-41bf-ac87-cc6d2224f29a",
+    "username": "magikmad",
+    "referral_code": "N229TQ",
+    "referred_by": null,
+    "points": 0,
+    "avatar_url": "",
+    "created_at": "2025-12-28T18:58:57.03232+00:00",
+    "bio": "Moon Soon ",
+    "is_public": true,
+    "totp_secret": "6R6RLI3YOYSD3HF6GQDMDBJLUZYY6TBJ",
+    "totp_enabled": true,
+    "backup_codes": [
+      "b26218971388eca2d93bc5144c60564cc79c28baa41c9410d2c90e32f90ed773",
+      "ced4e1fbfb1ba1afd5878ff3efe0d1cc049543ed46067990ed0aa46801ad4bd9",
+      "54bb416855428d83061e5f82314e007fcea3e1bd2e3b56bfbddabfa0f59a977f",
+      "8f239cf418c02467c8c5e132904f4fcafa70a813f8d2f986ae85ab94170cd4db",
+      "6ae7f264119498ef990b510d1534af134cb785b20eb56fb235f499629eeb34fc",
+      "1742ae0b6fea5b706f532120ba7bba372ed57b80628cc65b9f67c88543e8452e",
+      "6c893b75de3cc4abbdb9b2c9ced258ea917b112b28e641ea877e2f152de7ddd7",
+      "aefe730ec9c8f176e3f0429a3285da4434b42c2d9fe3805549d65eb920b25bad"
+    ],
+    "subscription_tier": "elite",
+    "stripe_customer_id": "cus_TnX5awfBlQF0uh",
+    "stripe_subscription_id": null,
+    "subscription_status": "active"
+  }
+]
